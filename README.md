@@ -68,7 +68,7 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 
 ## 📫 Contact
 
-- **Email:** your.email@example.com
+- **Email:** kudakwashe.d.marara@gmail.com
 - **LinkedIn:** [Your LinkedIn](www.linkedin.com/in/kudakwashe-marara)
 - **Portfolio:** [Your Site](https://github.com/kmarara)
 
@@ -77,4 +77,5 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 ---
 
 ![Collaboration Visual](https://via.placeholder.com/400x120.png?text=Collaboration+and+Sustainability)
+
 
