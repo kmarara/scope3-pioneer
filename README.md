@@ -78,6 +78,3 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 
 ![Collaboration Visual](https://via.placeholder.com/400x120.png?text=Collaboration+and+Sustainability)
 
-
-
-# Strategic Supervisor Outreach - PhD in Sustainability Science & Technology
