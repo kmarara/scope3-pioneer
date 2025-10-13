@@ -80,3 +80,4 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 
 
 
+# Strategic Supervisor Outreach - PhD in Sustainability Science & Technology
