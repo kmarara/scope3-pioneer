@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+# Below are the data models I implemented for this project
 
 # Starting with the supplier model
 class Supplier(models.Model):

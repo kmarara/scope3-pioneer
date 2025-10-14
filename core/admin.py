@@ -3,7 +3,7 @@ from .models import Supplier, EmissionEntry
 
 
 # Register your models here.
-
+#
 # We start with Supplier Admin
 
 @admin.register(Supplier)
