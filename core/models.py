@@ -28,4 +28,4 @@ class EmissionEntry(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.supplier.name} emmision on {self.date_reported}: {self.scope3_emissions} tons"
+        return f"{self.supplier.name} emission on {self.date_reported}: {self.scope3_emissions} tons"

@@ -3,7 +3,8 @@ from . import views
 from .views import submit_emission
 
 urlpatterns = [
-    path('submit-emission/', views.submit_emission, name='submit_emission'),
+    #submit-emission/
+    path('', views.submit_emission, name='submit_emission'),
     path('submit-emission/success/', views.submit_emission_success, name='submit_emission_success')
 ]
 
