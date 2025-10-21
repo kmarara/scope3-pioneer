@@ -5,11 +5,38 @@
     <title></title>
 </head>
 <body>
-    <h1>Report Scope 3 Emissions</h1>
+    <h1 style="color: #00743f">Report Scope 3 Emissions</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
+        <!--{{ form.as_p }}-->
+
+        <div style="margin-bottom: 15px;">
+            {{ form.supplier.label_tag }}<br>{{ form.supplier }}
+        </div>
+
+        <div>
+            {{ form.date_reported.label_tag }}<br>{{ form.date_reported }}<br>
+            <small>{{ form.date_reported.help_text }}</small>
+        </div>
+
+        <div>
+            {{ form.scope3_emissions.label_tag }}<br>{{ form.scope3_emissions }}<br>
+            <small>{{ form.scope3_emissions.help_text }}</small>
+        </div>
+
+        <div>
+            {{ form.evidence_file.label_tag }}<br>{{ form.evidence_file }}
+        </div>
+
+        <div>
+            {{ form.notes.label_tag }}<br>{{ form.notes }}
+        </div>
+
+        {% if form.errors %}
+           <div style="color: red;">Please correct the errors below</div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit Emission Entry</button>
     </form>
 </body>
 </html>

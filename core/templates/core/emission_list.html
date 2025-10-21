@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <h2>All Emissions Submissions</h2>
+    <table border="1">
+        <tr>
+            <th>Supplier</th><th>Date</th><th>Scope 3 Emission</th><th>Verified</th>
+        </tr>
+        {% for entry in emissions %}
+        <tr>
+            <td>{{ entry.supplier.name }}</td>
+            <td>{{ entry.date_reported }}</td>
+            <td>{{ entry.scope3_emissions }}</td>
+            <td>{{ entry.verified }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No entries</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
