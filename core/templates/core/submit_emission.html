@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body>
-    <h1 style="color: #00743f">Report Scope 3 Emissions</h1>
-    <form method="post" enctype="multipart/form-data">
+<body style="background: lightseagreen">
+    <h1 style="color: #00743f; max-width: 500px;">Report Scope 3 Emissions</h1>
+    <form method="post" enctype="multipart/form-data" style="max-width: 500px; margin: auto;">
         {% csrf_token %}
         <!--{{ form.as_p }}-->
 
@@ -14,26 +14,38 @@
             {{ form.supplier.label_tag }}<br>{{ form.supplier }}
         </div>
 
-        <div>
+        <div style="margin-bottom: 15px;">
             {{ form.date_reported.label_tag }}<br>{{ form.date_reported }}<br>
             <small>{{ form.date_reported.help_text }}</small>
         </div>
 
-        <div>
+        <div style="margin-bottom: 15px;">
             {{ form.scope3_emissions.label_tag }}<br>{{ form.scope3_emissions }}<br>
             <small>{{ form.scope3_emissions.help_text }}</small>
         </div>
 
-        <div>
+        <div style="margin-bottom: 15px;">
             {{ form.evidence_file.label_tag }}<br>{{ form.evidence_file }}
         </div>
 
-        <div>
+        <div style="margin-bottom: 15px;">
             {{ form.notes.label_tag }}<br>{{ form.notes }}
         </div>
 
         {% if form.errors %}
-           <div style="color: red;">Please correct the errors below</div>
+           <div style="color: red; background: #ffeeee; padding: 8px; border-radius: 5px;">
+               Please correct the errors below before submitting:
+               <ul>
+                   {% for field in form %}
+                       {% for error in field.errors %}
+                           <li><strong>{{ field.label }}</strong>{{ error }}</li>
+                       {% endfor %}
+                   {% endfor %}
+                   {% for error in form.non_field_errors %}
+                       <li>{{ error }}</li>
+                   {% endfor %}
+               </ul>
+           </div>
         {% endif %}
 
         <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit Emission Entry</button>
