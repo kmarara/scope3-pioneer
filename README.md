@@ -39,9 +39,9 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 | Vision & MVP      | Problem, features list          | ✅      |
 | Scaffold Project  | Code repo, framework setup      | ✅      |
 | Models            | Data models, migrations, ERD    | ✅      |
-| Intake            | Portal, login, API              | ⏳      |
-| Verification      | Manual review, ML flags         | ⏳      |
-| Dashboards        | Interactive/UI, reports export  | ⏳      |
+| Intake            | Portal, login, API              | ✅      |
+| Verification      | Manual review, ML flags         | ✅      |
+| Dashboards        | Interactive/UI, reports export  | ✅      |
 | Integration & Scale| Spring Boot services, APIs     | ⏳      |
 | Deploy & Feedback | Cloud deploy, feedback results  | ⏳      |
 
