@@ -33,6 +33,18 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # My Apps
     'core',
+    'accounts',  # User registration and authentication
+    'iot',
+    'ml_services',
+    'blockchain',
+    'scenarios',
+    'saas',
+    'api',  # REST API app
+    
+    # Third-party apps
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     
     # default apps
     'django.contrib.admin',
@@ -45,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,6 +95,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Login/Logout URLs
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Password validation
@@ -124,3 +142,38 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'api.authentication.APIKeyAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+# CORS settings for API access
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ML Model settings
+ML_MODELS_DIR = BASE_DIR / 'ml_models'
+ML_MODELS_DIR.mkdir(exist_ok=True)
+
+# Blockchain settings
+BLOCKCHAIN_NETWORK = 'ethereum'  # or 'polygon', 'bsc', etc.
+BLOCKCHAIN_RPC_URL = ''  # Set in environment variables
+
+# IoT settings
+IOT_API_KEY_LENGTH = 48

@@ -1,0 +1,306 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Scope 3 Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-speedometer2"></i> Dashboard Overview</h1>
+    <p>Real-time insights into your Scope 3 carbon emissions</p>
+</div>
+
+<!-- Key Metrics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted mb-0">Total Emissions</h5>
+                    <i class="bi bi-graph-up text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <h2 class="text-primary mb-1">{{ total_emissions|floatformat:2 }}</h2>
+                <small class="text-muted">tCO₂e (All time cumulative)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card stat-success h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted mb-0">Recent (30 days)</h5>
+                    <i class="bi bi-calendar-check text-success" style="font-size: 2rem;"></i>
+                </div>
+                <h2 class="text-success mb-1">{{ recent_emissions|floatformat:2 }}</h2>
+                <small class="text-muted">tCO₂e (Last month)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card stat-warning h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted mb-0">IoT Devices</h5>
+                    <i class="bi bi-wifi text-warning" style="font-size: 2rem;"></i>
+                </div>
+                <h2 class="text-warning mb-1">{{ iot_device_count }}</h2>
+                <small class="text-muted">{{ recent_readings }} readings (24h)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card stat-info h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted mb-0">Verification Rate</h5>
+                    <i class="bi bi-shield-check text-info" style="font-size: 2rem;"></i>
+                </div>
+                <h2 class="text-info mb-1">{{ verification_rate|floatformat:1 }}%</h2>
+                <small class="text-muted">{{ verified_count }}/{{ total_entries }} verified</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- ML Hotspot Predictions -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> ML Hotspot Predictions</h5>
+            </div>
+            <div class="card-body">
+                {% if hotspot_predictions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Supplier</th>
+                                    <th>Predicted</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prediction in hotspot_predictions %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ prediction.supplier.name }}</strong>
+                                        <span class="badge bg-danger ms-2">HOTSPOT</span>
+                                    </td>
+                                    <td><strong>{{ prediction.predicted_emissions|floatformat:2 }} tCO₂e</strong></td>
+                                    <td>
+                                        {% widthratio prediction.confidence_score 1 100 as confidence_percent %}
+                                        <div class="progress" style="height: 25px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" 
+                                                 style="width: {{ confidence_percent }}%">
+                                                {{ confidence_percent|floatformat:0 }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-info-circle text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">No hotspot predictions yet. Add more emission data to enable ML predictions.</p>
+                        <a href="{% url 'submit_emission' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add Emission Data
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Suppliers -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Top Suppliers by Emissions</h5>
+            </div>
+            <div class="card-body">
+                {% if top_suppliers %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Supplier</th>
+                                    <th>Total Emissions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for supplier in top_suppliers|slice:":10" %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary rounded-pill">#{{ forloop.counter }}</span>
+                                    </td>
+                                    <td><strong>{{ supplier.supplier__name }}</strong></td>
+                                    <td><strong class="text-primary">{{ supplier.total|floatformat:2 }} tCO₂e</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-building text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">No emission data yet. Start by adding suppliers and emission entries.</p>
+                        <a href="{% url 'submit_emission' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add First Emission
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Data Source Breakdown -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Data Source Breakdown</h5>
+            </div>
+            <div class="card-body">
+                {% if data_source_breakdown %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Count</th>
+                                <th>Total Emissions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for source in data_source_breakdown %}
+                            <tr>
+                                <td>
+                                    {% if source.data_source == 'manual' %}
+                                        <i class="bi bi-pencil text-primary"></i> <strong>Manual Entry</strong>
+                                    {% elif source.data_source == 'iot' %}
+                                        <i class="bi bi-wifi text-info"></i> <strong>IoT Device</strong>
+                                    {% elif source.data_source == 'ml_estimate' %}
+                                        <i class="bi bi-robot text-success"></i> <strong>ML Estimate</strong>
+                                    {% elif source.data_source == 'spend_based' %}
+                                        <i class="bi bi-calculator text-warning"></i> <strong>Spend-Based</strong>
+                                    {% else %}
+                                        {{ source.data_source }}
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-secondary">{{ source.count }}</span></td>
+                                <td><strong>{{ source.total_emissions|floatformat:2 }} tCO₂e</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-pie-chart text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">No data sources tracked yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Scenarios -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Recent Scenarios</h5>
+            </div>
+            <div class="card-body">
+                {% if scenarios %}
+                    {% for scenario in scenarios %}
+                    <div class="border-start border-4 border-success ps-3 pb-3 mb-3">
+                        <h6 class="mb-1">{{ scenario.name }}</h6>
+                        <small class="text-muted d-block mb-2">
+                            <i class="bi bi-tag"></i> {{ scenario.scenario_type|title }}
+                        </small>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Baseline:</small>
+                                <div><strong>{{ scenario.baseline_emissions|floatformat:2 }} tCO₂e</strong></div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Reduction:</small>
+                                <div><strong class="text-success">{{ scenario.reduction_percentage|floatformat:1 }}%</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <a href="/admin/scenarios/scenario/" class="btn btn-sm btn-outline-success w-100">
+                        <i class="bi bi-arrow-right"></i> View All Scenarios
+                    </a>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-lightbulb text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">No scenarios created yet. Create scenarios to model emission reduction strategies.</p>
+                        <a href="/admin/scenarios/scenario/add/" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Create Scenario
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Blockchain Verification Status -->
+{% if blockchain_verified_count > 0 %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-shield-check"></i> Blockchain Verification</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>{{ blockchain_verified_count }}</strong> emission entries verified on blockchain
+                    ({{ verification_rate|floatformat:1 }}% verification rate)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3 col-sm-6">
+                        <a href="{% url 'submit_emission' %}" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Submit New Emission
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="/admin/iot/iotdevice/add/" class="btn btn-info w-100">
+                            <i class="bi bi-wifi"></i> Add IoT Device
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="/admin/scenarios/scenario/add/" class="btn btn-success w-100">
+                            <i class="bi bi-lightbulb"></i> Create Scenario
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="/admin/" class="btn btn-secondary w-100">
+                            <i class="bi bi-gear"></i> Admin Panel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

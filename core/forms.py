@@ -41,6 +41,9 @@ class EmissionEntryForm(forms.ModelForm):
         labels = {
             'supplier': 'Supplier Name'
         }
+        widgets = {
+            'supplier': forms.Select(attrs={'class': 'form-select'}),
+        }
         #widgets = {
             #'date_reported': forms.DateInput(attrs={'type': 'date',
                                                     #'class': 'form-control'}),}

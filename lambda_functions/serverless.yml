@@ -1,0 +1,68 @@
+service: scope3-tracker-lambda
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  environment:
+    API_ENDPOINT: ${env:API_ENDPOINT}
+    IOT_TABLE: iot-readings
+    MODEL_BUCKET: scope3-ml-models
+    PREDICTION_QUEUE: ml-predictions
+
+functions:
+  processIoTData:
+    handler: process_iot_data.lambda_handler
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: iot/process
+          method: post
+          cors: true
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - IoTQueue
+              - Arn
+    environment:
+      IOT_TABLE: ${self:provider.environment.IOT_TABLE}
+
+  mlBatchPrediction:
+    handler: ml_batch_prediction.lambda_handler
+    timeout: 300
+    memorySize: 512
+    events:
+      - schedule:
+          rate: rate(1 day)
+          enabled: true
+    environment:
+      MODEL_BUCKET: ${self:provider.environment.MODEL_BUCKET}
+      PREDICTION_QUEUE: ${self:provider.environment.PREDICTION_QUEUE}
+
+resources:
+  Resources:
+    IoTQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: iot-readings-queue
+        VisibilityTimeout: 60
+
+    IoTTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.IOT_TABLE}
+        AttributeDefinitions:
+          - AttributeName: device_id
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: device_id
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+
+

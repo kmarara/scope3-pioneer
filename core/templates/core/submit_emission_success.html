@@ -1,15 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-    <div style="background: #e6ffe6; padding: 20px; border: 10px;">
-        <h2>Thank you! 🎉</h2>
-        <p>Your emission entry has been safely submitted and will be reviewed.</p>
-        <a href="{% url 'submit_emission' %}" class="btn btn-success">Submit another entry</a>
-    </div>
+{% extends 'core/base.html' %}
 
-</body>
-</html>
+{% block title %}Success - Scope 3 Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h2 class="mb-3">Emission Entry Submitted Successfully!</h2>
+                <p class="text-muted mb-4">
+                    Your Scope 3 emission entry has been recorded and is now part of your tracking system.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'submit_emission' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Another Entry
+                    </a>
+                    <a href="{% url 'emission_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-list-ul"></i> View All Entries
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Next Steps</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <strong>Review</strong> your entry in the <a href="{% url 'emission_list' %}">Emissions List</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-shield-check text-info"></i>
+                        <strong>Verify</strong> the entry in the <a href="/admin/core/emissionentry/">Admin Panel</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-graph-up text-primary"></i>
+                        <strong>View</strong> updated statistics on the <a href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li>
+                        <i class="bi bi-robot text-success"></i>
+                        <strong>Explore</strong> ML predictions and scenarios for insights
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
