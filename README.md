@@ -32,6 +32,25 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 
 ---
 
+## 🤖 AI/ML Features
+
+- **Emission Forecasting**: Time-series prediction using Linear Regression
+- **Anomaly Detection**: ML-powered hotspot identification  
+- **Spend-Based Estimation**: Automated emission calculations from procurement data
+- **Supplier Scoring**: Risk assessment and benchmarking
+
+### Training ML Models
+
+```bash
+# Train emission forecasting model
+python manage.py train_emission_model
+
+# Models are saved in ml_models/ directory
+# View trained models in admin panel under ML Services
+```
+
+---
+
 ## 🗂️ Work Breakdown Structure
 
 | Phase             | Deliverable                     | Status |
@@ -57,7 +76,68 @@ Businesses struggle to capture reliable supply chain carbon data. This platform 
 
 ---
 
-## 👔 Why Work With Me?
+## � Deployment
+
+### Free Deployment Options
+
+This app can be deployed for free using:
+
+1. **Railway** (Recommended)
+   - Connect your GitHub repo
+   - Automatic builds and deploys
+   - Free tier: 512MB RAM, 1GB storage
+   - Custom domain included
+
+2. **Render**
+   - Use `render.yaml` for configuration
+   - Free tier: 750 hours/month
+   - Automatic SSL
+
+3. **Heroku**
+   - Free tier available
+   - Easy Django deployment
+
+### Local Development
+
+```bash
+# Clone the repo
+git clone <your-repo>
+cd scope3_tracker
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
+
+# Populate sample data
+python manage.py populate_sample_data
+
+# Train ML model (requires sample data first)
+python manage.py train_emission_model
+
+# Create superuser
+python manage.py createsuperuser
+
+# Run server
+python manage.py runserver
+```
+
+### Demo Account
+After running `populate_sample_data`, you can login with:
+- **Username:** demo_user
+- **Password:** demo123
+
+### Docker
+
+```bash
+# Build and run with Docker Compose
+docker-compose up --build
+```
+
+---
+
+## �👔 Why Work With Me?
 
 - **Dual-stack fluency:** Python *and* Java for versatile problem solving
 - **Mission-driven:** Motivated by climate impact, not just code quality

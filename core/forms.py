@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmissionEntry
+from .models import EmissionEntry, Supplier
 
 class EmissionEntryForm(forms.ModelForm):
     date_reported = forms.DateTimeField(
@@ -44,6 +44,10 @@ class EmissionEntryForm(forms.ModelForm):
         widgets = {
             'supplier': forms.Select(attrs={'class': 'form-select'}),
         }
-        #widgets = {
-            #'date_reported': forms.DateInput(attrs={'type': 'date',
-                                                    #'class': 'form-control'}),}
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and hasattr(user, 'tenant_membership'):
+            tenant = user.tenant_membership.tenant
+            self.fields['supplier'].queryset = Supplier.objects.filter(tenant=tenant)

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: scope3-tracker
+    runtime: python3
+    buildCommand: pip install -r requirements.txt
+    startCommand: python manage.py runserver 0.0.0.0:$PORT --settings=scope3_tracker.settings_prod
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: scope3_tracker.settings_prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        fromService:
+          type: web
+          name: scope3-tracker
+          property: host

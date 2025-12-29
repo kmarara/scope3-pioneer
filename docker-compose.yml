@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - /app/db.sqlite3
+    environment:
+      - DJANGO_SETTINGS_MODULE=scope3_tracker.settings_prod
+    command: python manage.py runserver 0.0.0.0:8000

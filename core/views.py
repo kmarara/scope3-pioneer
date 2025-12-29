@@ -24,12 +24,12 @@ def home(request):
 @login_required
 def submit_emission(request):
     if request.method == 'POST':
-        form = EmissionEntryForm(request.POST, request.FILES)
+        form = EmissionEntryForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('submit_emission_success')
     else:
-        form = EmissionEntryForm()
+        form = EmissionEntryForm(user=request.user)
     return render(request, 'core/submit_emission.html', {'form': form})
 
 
@@ -37,15 +37,17 @@ def submit_emission_success(request):
     return render(request, 'core/submit_emission_success.html')
 
 
-# View for login
 @login_required
 def emission_list(request):
     # http://127.0.0.1:8000/emissions/
+    # Get user's tenant
+    tenant = request.user.tenant_membership.tenant if hasattr(request.user, 'tenant_membership') else None
+    
     # Get filter values from GET request
     supplier_id = request.GET.get('supplier')
     verified = request.GET.get('verified')
 
-    entries = EmissionEntry.objects.all().order_by('-date_reported')
+    entries = EmissionEntry.objects.filter(supplier__tenant=tenant).order_by('-date_reported') if tenant else EmissionEntry.objects.all().order_by('-date_reported')
 
     search_query = request.GET.get('search')
     if search_query:
@@ -60,7 +62,7 @@ def emission_list(request):
         entries = entries.filter(verified=False)
 
     # For filter dropdown
-    suppliers = Supplier.objects.all()
+    suppliers = Supplier.objects.filter(tenant=tenant) if tenant else Supplier.objects.all()
 
     paginator = Paginator(entries, 10)
     page_number = request.GET.get('page')
